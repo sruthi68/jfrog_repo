@@ -1,12 +1,12 @@
 node {
+    stage('Uploading and downloading artifacts')
     git url: 'https://github.com/sruthi68/playbook.git'
 
     // Get Artifactory server instance, defined in the Artifactory Plugin administration page.
     def server = Artifactory.server "Artifactory-1"
 
     // Read the upload spec and upload files to Artifactory.
-    stage('Downloading artifacts')
-     def downloadSpec =
+    def downloadSpec =
             '''{
             "files": [
                 {
@@ -17,12 +17,10 @@ node {
             ]
         }'''
 
-     def buildInfo1 = server.download spec: downloadSpec
-    }
+    def buildInfo1 = server.download spec: downloadSpec
+
     // Read the upload spec which was downloaded from github.
-    stage('Uploading artifacts')
-    {
-     def uploadSpec =
+    def uploadSpec =
             '''{
             "files": [
                 {
@@ -34,8 +32,8 @@ node {
         }'''
 
     // Upload to Artifactory.
-     def buildInfo2 = server.upload spec: uploadSpec
-    }
+    def buildInfo2 = server.upload spec: uploadSpec
+
     // Merge the upload and download build-info objects.
     buildInfo1.append buildInfo2
 
